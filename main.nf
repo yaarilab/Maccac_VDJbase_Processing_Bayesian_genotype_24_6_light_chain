@@ -2236,7 +2236,7 @@ input:
  set val(name3), file(collapse_fail) from g0_19_outputFileTSV1_g0_27
 
 output:
- set val(name), file("*txt")  into g0_27_logFile0_g_63
+ set val(name), file("*txt")  into g0_27_logFile00
 
 script:
 
@@ -2277,74 +2277,6 @@ file_path <- paste(chartr(".", "1", x),"output.txt", sep="-")
 cat(lines, sep = "\n", file = file_path, append = TRUE)
 """
 
-}
-
-
-process maccac_pipeline_statistics {
-
-publishDir params.outdir, mode: 'copy', saveAs: {filename -> if (filename =~ /.*csv$/) "pipeline_statistics/$filename"}
-input:
- set val(name), file(first_igblast) from g0_27_logFile0_g_63
-
-output:
- file "*csv"  into g_63_outputFileCSV00
-
-
-script:
-
-readArray_first_igblast = first_igblast.toString().split(' ')
-readArray_clone = clone.toString().split(' ')
-
-
-
-"""
-#!/usr/bin/env Rscript 
-
-x1<-"${readArray_first_igblast[0]}"
-x2<-"${readArray_clone[0]}"
-
-file_names <- c(x1, x2)
-output_file <- "output.txt"
-content <- sapply(file_names, function(file) {
-  readLines(file)
-}, simplify = "c")
-writeLines(unlist(content), con = output_file)
-
-library(prestor)
-library(dplyr)
-
-console_log <- loadConsoleLog("output.txt")
-
-log_df <- console_log
-pass=c("PASS", "UNIQUE")
-fail=c("FAIL", "DUPLICATE", "UNDETERMINED")
-
-# Get passed entries
-pass_df <- log_df %>%
-    filter(!!rlang::sym("field") %in% pass) %>%
-    mutate_at("value", as.numeric) %>%
-    group_by(!!!rlang::syms(c("step", "task"))) %>%
-    dplyr::summarize(pass=sum(!!rlang::sym("value")))
-
-# Get failed entries
-fail_df <- log_df %>%
-    filter(!!rlang::sym("field") %in% fail) %>%
-    mutate_at("value", as.numeric) %>%
-    group_by(!!!rlang::syms(c("step", "task"))) %>%
-    summarize(fail=sum(!!rlang::sym("value")))
-
-# Merge passed and failed counts
-count_df <- inner_join(pass_df, fail_df, by=c("step", "task")) %>%
-    rowwise() %>%
-    dplyr::mutate(total=!!rlang::sym("pass") + !!rlang::sym("fail"),
-                  fraction=!!rlang::sym("pass") / !!rlang::sym("total"))
-
-
-df<-count_df[,c("task", "pass", "fail")]
-
-write.csv(df,"pipeline_statistics.csv") 
-
-"""
 }
 
 
