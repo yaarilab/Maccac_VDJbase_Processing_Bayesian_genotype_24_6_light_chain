@@ -17,9 +17,9 @@ The pipeline can be devided into seven main componenet:
 
 > In this section, in case undocumented alleles were inferred the repertoire is re-aligned and annotated with the additional alleles.
 
-**4. Clonal inference and selection of colonal representative**
+**4. Pre genotype filter**
 
-> In this section, clones are infered for the annotated repertoire, and a single representative for each clone whith the least number of mutation is chosen.
+> In this section, we take only reads with: No mutation within the V region, Single allele assignment, Starting from position one of the V germline
 
 **5. Genotype inference**
 
@@ -40,17 +40,15 @@ The pipeline can be devided into seven main componenet:
 2. heavy_chain (yes/no)
 3. chain - (IGHV/IGLV/IGKV)
 4. Reference set files for IG*V, IG*D, and IG*J alleles in fasta format for the right chain.
-5. auxiliary_data and custom_internal_data for the right chain.
 
 ### Output:
 
-1. The aligned repertoire with the personal reference set.
-2. The aligned repertoire with the init reference set.
-3. A genotype reports
-4. A log files
-5. An ogrdb statistics report for the init aligned repertoire
-6. An ogrdb statistics report for the final aligned repertoire
-7. pipeline_statistic.csv - table of pass and fail reads for some of the steps.
+
+1. The aligned repertoire with the init reference set.
+2. A genotype reports
+3. A log files
+4. An ogrdb statistics report for the init aligned repertoire
+5. pipeline_statistic.csv - table of pass and fail reads for some of the steps.
 
 ### Docker images: 
 
