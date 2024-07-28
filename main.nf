@@ -2059,6 +2059,7 @@ g_94_germlineFastaFile0_g_90= g_94_germlineFastaFile0_g_90.ifEmpty([""])
 
 process CreateGermlines {
 
+publishDir params.outdir, mode: 'copy', saveAs: {filename -> if (filename =~ /.*_germ-pass.tsv$/) "rearrangements/$filename"}
 input:
  set val(name),file(airrFile) from g11_12_outputFileTSV0_g_90
  set val(name1), file(v_germline_file) from g_70_germlineFastaFile0_g_90
