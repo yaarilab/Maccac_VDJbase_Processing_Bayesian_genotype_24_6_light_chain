@@ -46,6 +46,17 @@ params.Undocumented_Alleles.alpha = 0.05
 params.Undocumented_Alleles.j_max = 0.3
 params.Undocumented_Alleles.min_frac = 0.75
 
+params.Undocumented_Alleles_J.chain = "IGH"
+params.Undocumented_Alleles_J.num_threads = 10
+params.Undocumented_Alleles_J.germline_min = 200
+params.Undocumented_Alleles_J.min_seqs = 50
+params.Undocumented_Alleles_J.auto_mutrange = "true"
+params.Undocumented_Alleles_J.mut_range = "1:10"
+params.Undocumented_Alleles_J.pos_range = "1:38"
+params.Undocumented_Alleles_J.y_intercept = 0.125
+params.Undocumented_Alleles_J.alpha = 0.05
+params.Undocumented_Alleles_J.j_max = 0.15
+params.Undocumented_Alleles_J.min_frac = 0.75
 
 // part 3
 
@@ -1194,6 +1205,7 @@ g_8_germlineFastaFile1_g_70= g_8_germlineFastaFile1_g_70.ifEmpty([""])
 
 process change_names_fasta {
 
+publishDir params.outdir, mode: 'copy', saveAs: {filename -> if (filename =~ /new_V_novel_germline.*$/) "v_refs/$filename"}
 input:
  set val(name), file(v_ref) from g_8_germlineFastaFile1_g_70
 
